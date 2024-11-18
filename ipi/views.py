@@ -25,7 +25,12 @@ class IPAddressView(APIView):
         data = response.json()
         
         if data['status'] == 'fail':
-            return Response({"error": "Invalid IP address"}, status=status.HTTP_400_BAD_REQUEST)  
+            return Response({"error": "Invalid IP address"}, status=status.HTTP_400_BAD_REQUEST) 
+        country = data.get('country', 'Unknown') 
+        ip_entry = IPAddress.objects.create(ip=ip, country=country)
+        serializer = IPAddressSerializer(ip_entry)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         
       
